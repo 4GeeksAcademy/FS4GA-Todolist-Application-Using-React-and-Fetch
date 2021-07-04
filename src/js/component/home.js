@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 export function Home() {
 	//Creamos arreglo, en este caso solo tiene un elemento
 	const [listaTareas, setListaTareas] = useState(["Recordar agregar tareas"]);
@@ -18,6 +18,61 @@ igualamos el estado sin el anterior elemento*/
 			setListaTareas(filterList);
 		}
 	}
+
+	const llamarTodo = () => {
+		fetch("http://assets.breatheco.de/apis/fake/todos/user/wotancode", {
+			method: "GET",
+			//body: JSON.stringify(todos),
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+			.then(resp => {
+				//console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
+				//console.log(resp.status); // el código de estado = 200 o código = 400 etc.
+				//console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
+				return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
+			})
+			.then(data => {
+				setListaTareas(data);
+				//Aquí es donde debe comenzar tu código después de que finalice la búsqueda
+				//console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+			})
+			.catch(error => {
+				//manejo de errores
+				console.log(error);
+			});
+	};
+
+	const cargarTodo = () => {
+		fetch("http://assets.breatheco.de/apis/fake/todos/user/wotancode", {
+			method: "PUT",
+			body: JSON.stringify(listaTareas),
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+			.then(resp => {
+				//console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
+				//console.log(resp.status); // el código de estado = 200 o código = 400 etc.
+				//console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
+				return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
+			})
+			.then(data => llamarTodo())
+			//Aquí es donde debe comenzar tu código después de que finalice la búsqueda
+			//console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+			//setListaTareas(data);
+
+			.catch(error => {
+				//manejo de errores
+				console.log(error);
+			});
+	};
+
+	useEffect(() => {
+		llamarTodo();
+	}, []);
+
 	return (
 		<div className="text-center mt-5 container">
 			<h1>ToDo list</h1>
@@ -30,6 +85,7 @@ igualamos el estado sin el anterior elemento*/
 						setListaTareas([...listaTareas, inputText]);
 					setInputText("");
 				}}>
+				{/*input para agregar tareas*/}
 				<input
 					className="form-control form-control-lg my-3 elinput"
 					placeholder="Agrega tus tareas"
@@ -55,8 +111,14 @@ igualamos el estado sin el anterior elemento*/
 					);
 				})}
 			</ul>
+			{/*Mostramos numericamente la cantidad de pendientes*/}
 			<div className="pendientes">{listaTareas.length} pendiente/s</div>
-			<footer className="footerr">Por Pedro Yanez</footer>
+			<footer className="footerr">
+				<button className="" onClick={() => cargarTodo()}>
+					Cargar tareas en al API
+				</button>
+				<p>Por Pedro Yanez</p>
+			</footer>
 		</div>
 	);
 }
