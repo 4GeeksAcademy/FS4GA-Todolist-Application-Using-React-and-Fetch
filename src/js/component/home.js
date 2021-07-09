@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 export function Home() {
 	//Creamos arreglo, en este caso solo tiene un elemento
-	const [listaTareas, setListaTareas] = useState(["Recordar agregar tareas"]);
+	//const [listaTareas, setListaTareas] = useState(["Recordar agregar tareas"]);
+	const [listaTareas, setListaTareas] = useState([]);
 
 	///Guardar contenido del usuario bajo Status
 	const [inputText, setInputText] = useState("");
@@ -20,7 +21,7 @@ igualamos el estado sin el anterior elemento*/
 	}
 
 	const llamarTodo = () => {
-		fetch("http://assets.breatheco.de/apis/fake/todos/user/wotancode", {
+		fetch("http://assets.breatheco.de/apis/fake/todos/user/wotanCode", {
 			method: "GET",
 			//body: JSON.stringify(todos),
 			headers: {
@@ -28,7 +29,7 @@ igualamos el estado sin el anterior elemento*/
 			}
 		})
 			.then(resp => {
-				//console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
+				console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
 				//console.log(resp.status); // el código de estado = 200 o código = 400 etc.
 				//console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
 				return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
@@ -45,7 +46,7 @@ igualamos el estado sin el anterior elemento*/
 	};
 
 	const cargarTodo = () => {
-		fetch("http://assets.breatheco.de/apis/fake/todos/user/wotancode", {
+		fetch("http://assets.breatheco.de/apis/fake/todos/user/wotanCode", {
 			method: "PUT",
 			body: JSON.stringify(listaTareas),
 			headers: {
@@ -81,16 +82,24 @@ igualamos el estado sin el anterior elemento*/
 				onSubmit={evento => {
 					//evitamos que se recarge la pagina
 					evento.preventDefault();
-					if (inputText.length > 0)
+					if (inputText.label.length > 0)
 						setListaTareas([...listaTareas, inputText]);
-					setInputText("");
+					//setInputText("");
+					setInputText({ label: "", done: false });
 				}}>
 				{/*input para agregar tareas*/}
 				<input
 					className="form-control form-control-lg my-3 elinput"
 					placeholder="Agrega tus tareas"
-					onChange={evento => setInputText(evento.target.value)}
-					value={inputText}></input>
+					//onChange={evento => setInputText(evento.target.value)}
+					onChange={evento =>
+						setInputText({
+							label: evento.target.value,
+							done: false
+						})
+					}
+					//value={inputText}></input>
+					value={inputText.label}></input>
 			</form>
 			{/*Mostrando arreglo*/}
 			<ul className="list-group row">
@@ -99,7 +108,8 @@ igualamos el estado sin el anterior elemento*/
 						<li
 							className="list-group-item text-left elementos"
 							key={index}>
-							<span>{item}</span>
+							<span>{item.label}</span>
+							{/*<span>{item}</span>*/}
 							<button
 								className="btn btn-danger eliminador float-right"
 								onClick={() => {
