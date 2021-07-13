@@ -20,8 +20,9 @@ igualamos el estado sin el anterior elemento*/
 		}
 	}
 
+	//Este metodo es para llamar a la API y mostrarlo en el to-do List
 	const llamarTodo = () => {
-		fetch("http://assets.breatheco.de/apis/fake/todos/user/wotanCode", {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/wotanCode", {
 			method: "GET",
 			//body: JSON.stringify(todos),
 			headers: {
@@ -45,10 +46,38 @@ igualamos el estado sin el anterior elemento*/
 			});
 	};
 
+
+
+	//este es para cuando cargamos la informacion a la API
 	const cargarTodo = () => {
-		fetch("http://assets.breatheco.de/apis/fake/todos/user/wotanCode", {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/wotanCode", {
 			method: "PUT",
 			body: JSON.stringify(listaTareas),
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+			.then(resp => {
+				//console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
+				//console.log(resp.status); // el código de estado = 200 o código = 400 etc.
+				//console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
+				return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
+			})
+			.then(data => llamarTodo())
+			//Aquí es donde debe comenzar tu código después de que finalice la búsqueda
+			//console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+			//setListaTareas(data);
+
+			.catch(error => {
+				//manejo de errores
+				console.log(error);
+			});
+	};
+
+	const borrarTodo = () => {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/wotanCode", {
+			method: "DELETE",
+			//body: JSON.stringify(listaTareas),
 			headers: {
 				"Content-Type": "application/json"
 			}
@@ -126,6 +155,9 @@ igualamos el estado sin el anterior elemento*/
 			<footer className="footerr">
 				<button className="" onClick={() => cargarTodo()}>
 					Cargar tareas en al API
+				</button>
+				<button className="" onClick={() => borrarTodo()}>
+					Eliminar to-do de la Api
 				</button>
 				<p>Por Pedro Yanez</p>
 			</footer>
