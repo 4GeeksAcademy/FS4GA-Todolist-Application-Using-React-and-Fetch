@@ -20,6 +20,32 @@ igualamos el estado sin el anterior elemento*/
 		}
 	}
 
+	//REPARANDO ESTO
+	const creartodo = () => {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/wotanCode", {
+			method: "POST",
+			body: [],
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+			.then(resp => {
+				console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
+				//console.log(resp.status); // el código de estado = 200 o código = 400 etc.
+				//console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
+				return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
+			})
+			.then(data => {
+				setListaTareas(data);
+				//Aquí es donde debe comenzar tu código después de que finalice la búsqueda
+				//console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
+			})
+			.catch(error => {
+				//manejo de errores
+				console.log(error);
+			});
+	};
+
 	//Este metodo es para llamar a la API y mostrarlo en el to-do List
 	const llamarTodo = () => {
 		fetch("https://assets.breatheco.de/apis/fake/todos/user/wotanCode", {
@@ -45,8 +71,6 @@ igualamos el estado sin el anterior elemento*/
 				console.log(error);
 			});
 	};
-
-
 
 	//este es para cuando cargamos la informacion a la API
 	const cargarTodo = () => {
@@ -100,6 +124,7 @@ igualamos el estado sin el anterior elemento*/
 	};
 
 	useEffect(() => {
+		//creartodo();
 		llamarTodo();
 	}, []);
 
